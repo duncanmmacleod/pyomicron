@@ -1039,6 +1039,15 @@ for i in range(args.submit_rescue_dag + 1):
         dagid = int(condor.find_job(Owner=getuser(),
                                     OmicronDAGMan=group)['ClusterId'])
         logger.info("Found existing condor ID = %d" % dagid)
+        dagman_out = dagfile.with_suffix(".dag.dagman.out")
+        if not dagman_out.is_file():
+            logger.warning(
+                "{} not found, cannot monitor DAG. This is likely because the "
+                "workflow has finished. This process will now exit.".format(
+                    dagman_out,
+                ),
+            )
+            break
     else:  # or submit DAG
         dagmanargs = set()
         if online:
